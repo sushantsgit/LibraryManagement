@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info:
+  title: Library Api - OpenAPI 3.0
+  description: |-
+    This is a sample Library Management Server based on the OpenAPI 3.0 specification.
+  version: 0.0.0
+servers:
+  - url: /
+tags:
+  - name: books
+    description: Everything about your Books
+  - name: users
+    description: Users
+  - name: loans
+    description: Loans
+paths:
+  /users:
+    post:
+      tags:
+        - users
+      summary: Add a new users
+      description: Add a new user
+      operationId: addUser
+      requestBody:
+        description: Create a new user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserBody"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUserBody"
+        "405":
+          description: Invalid input
+    get:
+      tags:
+        - users
+      summary: Get all users
+      description: Get all users
+      operationId: getUsers
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetUserBody"
+components:
+  schemas:
+    SanitizedUserFields:
+      type: object
+      properties:
+        password:
+          type: string
+          example: "12345"
+        phone:
+          type: string
+          example: "12345"
+    UserBody:
+      type: object
+      properties:
+        username:
+          type: string
+          example: theUser
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+        email:
+          type: string
+          example: john@email.com
+        role:
+          type: string
+          enum: ["student", "staff", "admin"]
+    CreateUserBody:
+      allOf:
+        - $ref: "#/components/schemas/UserBody"
+        - $ref: "#/components/schemas/SanitizedUserFields"
+    GetUserBody:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+        - $ref: "#/components/schemas/UserBody"
+        - type: object
+          properties:
+            isActive:
+              type: boolean
+              default: true
+              example: true
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header

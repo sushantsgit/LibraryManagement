@@ -14,8 +14,34 @@ tags:
   - name: loans
     description: Loans
 paths:
+  /login:
+    post:
+      tags:
+        - users
+      summary: Login a user
+      description: Login a user
+      operationId: loginUser
+      requestBody:
+        description: Login a user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "405":
+          description: Invalid input
   /users:
     post:
+      security:
+        - adminToken: []
+        - staffToken: []
       tags:
         - users
       summary: Add a new users
@@ -38,6 +64,9 @@ paths:
         "405":
           description: Invalid input
     get:
+      security:
+        - adminToken: []
+        - staffToken: []
       tags:
         - users
       summary: Get all users
@@ -69,6 +98,9 @@ paths:
                   $ref: "#/components/schemas/GetUserBody"
   /users/{id}:
     get:
+      security:
+        - adminToken: []
+        - staffToken: []
       tags:
         - users
       summary: Get a user by id
@@ -92,6 +124,9 @@ paths:
         "404":
           description: User not found
     post:
+      security:
+        - adminToken: []
+        - staffToken: []
       tags:
         - users
       summary: Update a user by id
@@ -125,6 +160,9 @@ paths:
           description: Invalid input
   /users/{id}/delete:
     post:
+      security:
+        - adminToken: []
+        - staffToken: []
       tags:
         - users
       summary: Delete a user by id
@@ -147,8 +185,367 @@ paths:
                 $ref: "#/components/schemas/GetUserBody"
         "404":
           description: User not found
+  /users/{id}/loans:
+    get:
+      security:
+        - adminToken: []
+        - staffToken: []
+      tags:
+        - loans
+      summary: Get all loans for a user
+      description: Get all loans for a user
+      operationId: getLoansByUserId
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: The number of items to skip before starting to collect the result set
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetUserLoans"
+        "404":
+          description: User not found
+  /books:
+    post:
+      security:
+        - adminToken: []
+        - staffToken: []
+      tags:
+        - books
+      summary: Add a new book
+      description: Add a new book
+      operationId: addBook
+      requestBody:
+        description: Create a new book
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookBody"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetBookBody"
+        "405":
+          description: Invalid input
+    get:
+      security:
+        - adminToken: []
+        - staffToken: []
+      tags:
+        - books
+      summary: Get all books
+      description: Get all books
+      operationId: getBooks
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: The number of items to skip before starting to collect the result set
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetBookBody"
+  /books/{id}:
+    get:
+      security:
+        - adminToken: []
+        - staffToken: []
+      tags:
+        - books
+      summary: Get a book by id
+      description: Get a book by id
+      operationId: getBookById
+      parameters:
+        - name: id
+          in: path
+          description: ID of book to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetBookBody"
+        "404":
+          description: Book not found
+    post:
+      security:
+        - adminToken: []
+        - staffToken: []
+      tags:
+        - books
+      summary: Update a book by id
+      description: Update a book by id
+      operationId: updateBookById
+      parameters:
+        - name: id
+          in: path
+          description: ID of book to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update a book
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookBody"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetBookBody"
+        "404":
+          description: Book not found
+        "405":
+          description: Invalid input
+  /books/{id}/delete:
+    post:
+      security:
+        - adminToken: []
+        - staffToken: []
+      tags:
+        - books
+      summary: Delete a book by id
+      description: Delete a book by id
+      operationId: deleteBookById
+      parameters:
+        - name: id
+          in: path
+          description: ID of book to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetBookBody"
+        "404":
+          description: Book not found
+  /loans:
+    post:
+      security:
+        - adminToken: []
+        - staffToken: []
+      tags:
+        - loans
+      summary: Add a new loan
+      description: Add a new loan
+      operationId: addLoan
+      requestBody:
+        description: Create a new loan
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateLoansBody"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetLoansBody"
+        "405":
+          description: Invalid input
+    get:
+      security:
+        - adminToken: []
+        - staffToken: []
+        - studentToken: []
+      tags:
+        - loans
+      summary: Get all loans
+      description: Get all loans
+      operationId: getLoans
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: The number of items to skip before starting to collect the result set
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetLoansBody"
+  /loans/{id}:
+    get:
+      security:
+        - adminToken: []
+        - staffToken: []
+        - studentToken: []
+      tags:
+        - loans
+      summary: Get a loan by id
+      description: Get a loan by id
+      operationId: getLoanById
+      parameters:
+        - name: id
+          in: path
+          description: ID of loan to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetLoansBody"
+        "404":
+          description: Loan not found
+    post:
+      security:
+        - adminToken: []
+        - staffToken: []
+      tags:
+        - loans
+      summary: Update a loan by id
+      description: Update a loan by id
+      operationId: updateLoanById
+      parameters:
+        - name: id
+          in: path
+          description: ID of loan to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update a loan
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateLoansBody"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetLoansBody"
+        "404":
+          description: Loan not found
+        "405":
+          description: Invalid input
+  /loans/{id}/delete:
+    post:
+      security:
+        - adminToken: []
+        - staffToken: []
+      tags:
+        - loans
+      summary: Delete a loan by id
+      description: Delete a loan by id
+      operationId: deleteLoanById
+      parameters:
+        - name: id
+          in: path
+          description: ID of loan to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetLoansBody"
+        "404":
+          description: Loan not found
 components:
   schemas:
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: theUser
+        password:
+          type: string
+          example: "12345"
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "12345"
+        expiresAt:
+          type: string
+          example: "2020-01-01T00:00:00.000Z"
     SanitizedUserFields:
       type: object
       properties:
@@ -194,16 +591,94 @@ components:
               type: boolean
               default: true
               example: true
+    CreateBookBody:
+      type: object
+      properties:
+        title:
+          type: string
+          example: The Book
+        author:
+          type: string
+          example: John James
+        isbn:
+          type: string
+          example: 12345
+        description:
+          type: string
+          example: A book about a book
+        quantity:
+          type: integer
+          format: int32
+          example: 1
+        categories:
+          type: array
+          items:
+            type: string
+            example: Fiction
+    GetBookBody:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+        - $ref: "#/components/schemas/CreateBookBody"
+    CreateLoansBody:
+      type: object
+      properties:
+        bookId:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        dueDate:
+          type: string
+          format: date
+          example: 2020-01-01
+    GetLoan:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+        - $ref: "#/components/schemas/CreateLoansBody"
+    GetLoansBody:
+      allOf:
+        - $ref: "#/components/schemas/CreateLoansBody"
+        - type: object
+          properties:
+            book:
+              $ref: "#/components/schemas/GetBookBody"
+            user:
+              $ref: "#/components/schemas/GetUserBody"
+    UserLoan:
+      allOf:
+        - $ref: "#/components/schemas/GetLoan"
+        - type: object
+          properties:
+            book:
+              $ref: "#/components/schemas/GetBookBody"
+    GetUserLoans:
+      allOf:
+        - $ref: "#/components/schemas/GetUserBody"
+        - type: object
+          properties:
+            loans:
+              type: array
+              items:
+                $ref: "#/components/schemas/UserLoan"
   securitySchemes:
-    petstore_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
-          scopes:
-            write:pets: modify pets in your account
-            read:pets: read your pets
-    api_key:
-      type: apiKey
-      name: api_key
-      in: header
+    adminToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    staffToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    studentToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

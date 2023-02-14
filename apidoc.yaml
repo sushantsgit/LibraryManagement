@@ -43,6 +43,21 @@ paths:
       summary: Get all users
       description: Get all users
       operationId: getUsers
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: The number of items to skip before starting to collect the result set
+          required: false
+          schema:
+            type: integer
+            format: int32
       responses:
         "200":
           description: Successful operation
@@ -52,6 +67,86 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/GetUserBody"
+  /users/{id}:
+    get:
+      tags:
+        - users
+      summary: Get a user by id
+      description: Get a user by id
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUserBody"
+        "404":
+          description: User not found
+    post:
+      tags:
+        - users
+      summary: Update a user by id
+      description: Update a user by id
+      operationId: updateUserById
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update a user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserBody"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUserBody"
+        "404":
+          description: User not found
+        "405":
+          description: Invalid input
+  /users/{id}/delete:
+    post:
+      tags:
+        - users
+      summary: Delete a user by id
+      description: Delete a user by id
+      operationId: deleteUserById
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUserBody"
+        "404":
+          description: User not found
 components:
   schemas:
     SanitizedUserFields:

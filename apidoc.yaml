@@ -55,7 +55,7 @@ paths:
               $ref: "#/components/schemas/CreateUserBody"
         required: true
       responses:
-        "200":
+        "201":
           description: Successful operation
           content:
             application/json:
@@ -191,7 +191,7 @@ paths:
         - adminToken: []
         - staffToken: []
       tags:
-        - loans
+        - users
       summary: Get all loans for a user
       description: Get all loans for a user
       operationId: getLoansByUserId
@@ -246,7 +246,7 @@ paths:
               $ref: "#/components/schemas/CreateBookBody"
         required: true
       responses:
-        "200":
+        "201":
           description: Successful operation
           content:
             application/json:

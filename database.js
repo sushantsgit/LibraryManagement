@@ -1,11 +1,10 @@
 const { Umzug, SequelizeStorage } = require("umzug");
 const { Sequelize } = require("sequelize");
 
-const { SQL_DB_PATH = "./library.db" } = process.env;
-
+const storage = process.env.SQL_DB_PATH;
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: SQL_DB_PATH,
+  storage,
   logging: false,
   pool: {
     max: 5,

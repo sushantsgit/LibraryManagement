@@ -6,7 +6,7 @@ const {
 
 async function startDBServer() {
   try {
-    process.env.SQL_DB_PATH = "./test.db";
+    process.env.SQL_DB_PATH = "test.db";
     await connectToDB();
   } catch (err) {
     console.error(err);

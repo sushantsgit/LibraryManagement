@@ -18,6 +18,16 @@ const createBookSchema = Joi.object({
   quantity: Joi.number().optional(),
 });
 
+const updateBookSchema = Joi.object({
+  title: Joi.string().optional(),
+  authorName: Joi.string().optional(),
+  isbn: Joi.string().optional(),
+  genre: Joi.string().optional(),
+  description: Joi.string().optional(),
+  quantity: Joi.number().optional(),
+});
+
 module.exports = {
   createBookSchema,
+  updateBookSchema,
 };

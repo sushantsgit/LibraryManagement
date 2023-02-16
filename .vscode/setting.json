@@ -1,0 +1,5 @@
+{
+  "jasmineExplorer.env": {
+    "SQL_DB_PATH": "test.db"
+  }
+}

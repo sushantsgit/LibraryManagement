@@ -1,7 +1,7 @@
-import { Books } from "../models/index,js";
-import { createBookSchema } from "../utils/validation";
+const { Books } = require("../models/index,js");
+const { createBookSchema } = require("../utils/validation");
 
-export async function createBook(book) {
+async function createBook(book) {
   try {
     await createBookSchema.validateAsync(book);
     const newBook = await Books.create(book);
@@ -10,3 +10,7 @@ export async function createBook(book) {
     throw new Error(error);
   }
 }
+
+module.exports = {
+  createBook,
+};

@@ -1,36 +1,44 @@
 const supertest = require("supertest");
+const { startDBServer, stopDBServer } = require("../utils/server");
+
 const app = require("../../app");
 
 describe("Books API", () => {
   const request = supertest(app);
+  beforeAll(async () => {
+    await startDBServer();
+  });
+  afterAll(async () => {
+    await stopDBServer();
+  });
   it("Test Book Creation API", async () => {
     const { status, body } = await request.post("/books").send({
       title: "Test Book",
-      author: "Test Author",
+      authorName: "Test authorName",
       isbn: "1234567890",
       description: "Test Description",
       quantity: 10,
-      categories: ["Test Category"],
+      genre: "Test Category",
     });
 
     expect(status).toBe(201);
     expect(body).toBeDefined();
     expect(body.title).toBe("Test Book");
-    expect(body.author).toBe("Test Author");
+    expect(body.authorName).toBe("Test authorName");
     expect(body.isbn).toBe("1234567890");
     expect(body.description).toBe("Test Description");
     expect(body.quantity).toBe(10);
-    expect(body.categories).toEqual(["Test Category"]);
+    expect(body.genre).toEqual("Test Category");
   });
 
   it("Test List Book API", async () => {
     const { status, body } = await request.post("/books").send({
       title: "Test Book",
-      author: "Test Author",
+      authorName: "Test authorName",
       isbn: "1234567890",
       description: "Test Description",
       quantity: 10,
-      categories: ["Test Category"],
+      genre: "Test Category",
     });
 
     expect(status).toBe(201);
@@ -46,11 +54,11 @@ describe("Books API", () => {
   it("Test Get Book By ID API", async () => {
     const { status, body } = await request.post("/books").send({
       title: "Test Book",
-      author: "Test Author",
+      authorName: "Test authorName",
       isbn: "1234567890",
       description: "Test Description",
       quantity: 10,
-      categories: ["Test Category"],
+      genre: "Test Category",
     });
 
     expect(status).toBe(201);

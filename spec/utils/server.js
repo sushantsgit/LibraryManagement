@@ -1,10 +1,7 @@
-import { connectToDB } from "../../database";
+const { connectToDB } = require("../../database");
 
-export async function startDBServer() {
+async function startDBServer() {
   try {
-    process.env.SQL_DB_USER = dummy;
-    process.env.SQL_DB_PWD = dummy;
-    process.env.SQL_DB_NAME = doesntmatter;
     process.env.SQL_DB_NAME = `memory-${new Date().getTime()}`;
     process.env.SQL_Db_PATH = "test.db";
     await connectToDB();
@@ -14,7 +11,7 @@ export async function startDBServer() {
   }
 }
 
-export async function stopDBServer() {
+async function stopDBServer() {
   try {
     // await disconnectFromDB();
     // eslint-disable-next-line no-promise-executor-return
@@ -23,3 +20,8 @@ export async function stopDBServer() {
     console.error(err);
   }
 }
+
+module.exports = {
+  startDBServer,
+  stopDBServer,
+};

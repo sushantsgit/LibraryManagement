@@ -1,4 +1,14 @@
-import { STRING, TEXT, UUID, UUIDV4 } from "sequelize";
+const {
+  STRING,
+  TEXT,
+  UUID,
+  UUIDV4,
+  INTEGER,
+  DATE,
+  Model,
+} = require("sequelize");
+
+const { sequelize } = require("../database");
 
 const bookSchema = {
   id: {
@@ -101,7 +111,7 @@ const loanSchema = {
   },
 };
 
-export class Books extends Model {}
+class Books extends Model {}
 
 Books.init(bookSchema, {
   sequelize,
@@ -109,7 +119,7 @@ Books.init(bookSchema, {
   timestamps: true,
 });
 
-export class Users extends Model {}
+class Users extends Model {}
 
 Users.init(userSchema, {
   sequelize,
@@ -117,7 +127,7 @@ Users.init(userSchema, {
   timestamps: true,
 });
 
-export class Loans extends Model {}
+class Loans extends Model {}
 
 Loans.init(loanSchema, {
   sequelize,
@@ -147,3 +157,10 @@ Loans.belongsTo(Books, {
   foreignKey: "bookId",
   as: "book",
 });
+
+module.exports = {
+  Books,
+  Users,
+  Loans,
+  ROLES,
+};

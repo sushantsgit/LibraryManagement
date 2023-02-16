@@ -1,6 +1,6 @@
-import Joi from "joi";
+const Joi = require("joi");
 
-export const createBookSchema = Joi.object({
+const createBookSchema = Joi.object({
   title: Joi.string().required().messages({
     "string.empty": "Title is required",
     "any.required": "Title is required",
@@ -17,3 +17,7 @@ export const createBookSchema = Joi.object({
   description: Joi.string().optional(),
   quantity: Joi.number().optional(),
 });
+
+module.exports = {
+  createBookSchema,
+};

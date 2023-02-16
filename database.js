@@ -1,9 +1,9 @@
-import { Umzug, SequelizeStorage } from "umzug";
-import { Sequelize } from "sequelize";
+const { Umzug, SequelizeStorage } = require("umzug");
+const { Sequelize } = require("sequelize");
 
-export const sequelize = new Sequelize({
+const sequelize = new Sequelize({
   dialect: "sqlite",
-  path: process.env.SQL_DB_PATH || "library.db",
+  path: process.env.SQL_DB_PATH || "./library.db",
   logging: false,
   pool: {
     max: 5,
@@ -12,7 +12,7 @@ export const sequelize = new Sequelize({
   },
 });
 
-export async function connectToDB() {
+async function connectToDB() {
   try {
     await sequelize.authenticate();
     console.log(
@@ -31,12 +31,12 @@ export async function connectToDB() {
   }
 }
 
-export async function disconnectFromDB() {
+async function disconnectFromDB() {
   await sequelize.close();
-  logVerbose("Disconnected from database");
+  console.log("Disconnected from database");
 }
 
-export async function runAllMigrations() {
+async function runAllMigrations() {
   const migrator = new Umzug({
     migrations: {
       glob: ["migrations/*.js", { cwd: __dirname }],
@@ -60,15 +60,22 @@ export async function runAllMigrations() {
   });
   // checks migrations and run them if they are not already applied
   await migrator.up();
-  logVerbose("All migrations performed successfully");
+  console.log("All migrations performed successfully");
   await seeder.up();
-  logVerbose("All seeders performed successfully");
+  console.log("All seeders performed successfully");
 }
 
 /**
  * To be used during tests.
  */
-export async function dropAllTables() {
+async function dropAllTables() {
   await sequelize.getQueryInterface().dropAllTables();
-  logVerbose("Dropped all tables from database...");
+  console.log("Dropped all tables from database...");
 }
+
+module.exports = {
+  connectToDB,
+  disconnectFromDB,
+  dropAllTables,
+  sequelize,
+};

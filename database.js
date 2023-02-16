@@ -1,9 +1,11 @@
 const { Umzug, SequelizeStorage } = require("umzug");
 const { Sequelize } = require("sequelize");
 
+const { SQL_DB_PATH = "./library.db" } = process.env;
+
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  path: process.env.SQL_DB_PATH || "./library.db",
+  storage: SQL_DB_PATH,
   logging: false,
   pool: {
     max: 5,
@@ -21,12 +23,9 @@ async function connectToDB() {
 
     // eslint-disable-next-line no-use-before-define
     await runAllMigrations();
-
-    await createSeedUsers();
-
     return sequelize;
   } catch (err) {
-    logError("Unable to connect to the database:", err);
+    console.error("Unable to connect to the database:", err);
     throw err;
   }
 }

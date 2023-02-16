@@ -1,6 +1,6 @@
 const supertest = require("supertest");
 const { startDBServer, stopDBServer } = require("../utils/server");
-
+const { generateRandomISBN } = require("../utils/helper");
 const app = require("../../app");
 
 describe("Books API", () => {
@@ -12,10 +12,11 @@ describe("Books API", () => {
     await stopDBServer();
   });
   it("Test Book Creation API", async () => {
+    const isbn = generateRandomISBN();
     const { status, body } = await request.post("/books").send({
       title: "Test Book",
       authorName: "Test authorName",
-      isbn: "1234567890",
+      isbn,
       description: "Test Description",
       quantity: 10,
       genre: "Test Category",
@@ -25,7 +26,7 @@ describe("Books API", () => {
     expect(body).toBeDefined();
     expect(body.title).toBe("Test Book");
     expect(body.authorName).toBe("Test authorName");
-    expect(body.isbn).toBe("1234567890");
+    expect(body.isbn).toBe(isbn);
     expect(body.description).toBe("Test Description");
     expect(body.quantity).toBe(10);
     expect(body.genre).toEqual("Test Category");

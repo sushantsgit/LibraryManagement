@@ -3,8 +3,8 @@ const { createBookSchema } = require("../utils/validation");
 
 async function createBook(book) {
   try {
-    await createBookSchema.validateAsync(book);
-    const newBook = await Books.create(book);
+    const valiadateBook = await createBookSchema.validateAsync(book);
+    const newBook = await Books.create(valiadateBook);
     return newBook;
   } catch (error) {
     throw new Error(error);

@@ -1,11 +1,13 @@
-const { connectToDB } = require("../../database");
+const {
+  connectToDB,
+  disconnectFromDB,
+  dropAllTables,
+} = require("../../database");
 
 async function startDBServer() {
   try {
-    process.env.SQL_DB_NAME = `memory-${new Date().getTime()}`;
-    process.env.SQL_Db_PATH = "test.db";
+    process.env.SQL_DB_PATH = "./test.db";
     await connectToDB();
-    deleteFilesInDirectory(UPLOADS_DIR);
   } catch (err) {
     console.error(err);
   }
@@ -13,6 +15,7 @@ async function startDBServer() {
 
 async function stopDBServer() {
   try {
+    // await dropAllTables();
     // await disconnectFromDB();
     // eslint-disable-next-line no-promise-executor-return
     await new Promise((resove) => setTimeout(resove, 1000));

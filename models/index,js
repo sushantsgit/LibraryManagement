@@ -1,0 +1,149 @@
+import { STRING, TEXT, UUID, UUIDV4 } from "sequelize";
+
+const bookSchema = {
+  id: {
+    type: UUID,
+    primaryKey: true,
+    defaultValue: UUIDV4,
+  },
+  title: {
+    type: STRING,
+    allowNull: false,
+  },
+  authorName: {
+    type: STRING,
+    allowNull: false,
+  },
+  isbn: {
+    type: STRING,
+    allowNull: false,
+    unique: true,
+  },
+  genre: {
+    type: STRING,
+    allowNull: true,
+  },
+  description: {
+    type: TEXT,
+    allowNull: true,
+  },
+  quantity: {
+    type: INTEGER,
+    defaultValue: 1,
+  },
+};
+
+const ROLES = {
+  ADMIN: "admin",
+  STUDENT: "student",
+  STAFF: "staff",
+};
+
+const userSchema = {
+  id: {
+    type: UUID,
+    primaryKey: true,
+    defaultValue: UUIDV4,
+  },
+  firstName: {
+    type: STRING,
+    allowNull: false,
+  },
+  lastName: {
+    type: STRING,
+    allowNull: true,
+  },
+  username: {
+    type: STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password: {
+    type: STRING,
+    allowNull: false,
+  },
+  role: {
+    type: STRING,
+    allowNull: false,
+    defaultValue: ROLES.STUDENT,
+  },
+};
+
+const loanSchema = {
+  id: {
+    type: UUID,
+    primaryKey: true,
+    defaultValue: UUIDV4,
+  },
+  userId: {
+    type: UUID,
+    allowNull: false,
+    references: {
+      model: "users",
+      key: "id",
+    },
+  },
+  bookId: {
+    type: UUID,
+    allowNull: false,
+    references: {
+      model: "books",
+      key: "id",
+    },
+  },
+  loanDate: {
+    type: DATE,
+    allowNull: false,
+  },
+  returnDate: {
+    type: DATE,
+    allowNull: true,
+  },
+};
+
+export class Books extends Model {}
+
+Books.init(bookSchema, {
+  sequelize,
+  modelName: "books",
+  timestamps: true,
+});
+
+export class Users extends Model {}
+
+Users.init(userSchema, {
+  sequelize,
+  modelName: "users",
+  timestamps: true,
+});
+
+export class Loans extends Model {}
+
+Loans.init(loanSchema, {
+  sequelize,
+  modelName: "loans",
+  timestamps: true,
+  createdAt: "loanDate",
+  updatedAt: false,
+});
+
+// Associations
+Users.hasMany(Loans, {
+  foreignKey: "userId",
+  as: "loans",
+});
+
+Loans.belongsTo(Users, {
+  foreignKey: "userId",
+  as: "user",
+});
+
+Books.hasMany(Loans, {
+  foreignKey: "bookId",
+  as: "loans",
+});
+
+Loans.belongsTo(Books, {
+  foreignKey: "bookId",
+  as: "book",
+});

@@ -16,18 +16,7 @@ app.get("/", (_req, res) => {
     );
 });
 
-// app.post("/users", (req, res) => {
-//   console.log(req.body);
-//   res.status(201).send({
-//     id: Math.random() * 1e5,
-//     name: req.body.name,
-//     email: req.body.email,
-//     firstName: req.body.firstName,
-//     lastName: req.body.lastName,
-//     isActive: true,
-//     role: "student",
-//   });
-// });
+app.use("/books", require("./books/router"));
 
 module.exports = app;
 // Path: app.js

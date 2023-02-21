@@ -11,11 +11,24 @@ async function createBook(book) {
   }
 }
 
-async function getBooks(limit, offset) {
+async function getBooks(query) {
   try {
+    let { limit, offset, sortBy, sortOrder } = query;
+    limit = +limit || 10;
+    offset = +offset || 0;
+    sortBy = JSON.parse(sortBy) || [];
+    sortOrder = JSON.parse(sortOrder) || [];
+    const order = [];
+    if (sortBy && sortOrder && sortBy.length === sortOrder.length) {
+      for (let i = 0; i < sortBy.length; i++) {
+        order.push([sortBy[i], sortOrder[i]]);
+      }
+    }
+    console.log(order);
     const books = await Books.findAll({
       limit,
       offset,
+      order,
     });
     return books;
   } catch (error) {
@@ -31,7 +44,7 @@ async function getBookById(id) {
     }
     return book;
   } catch (error) {
-    throw new Error(error);
+    throw error;
   }
 }
 
@@ -49,7 +62,7 @@ async function updateBook(id, data) {
     await book.update(rest);
     return getBookById(id);
   } catch (error) {
-    throw new Error(error);
+    throw error;
   }
 }
 
@@ -62,7 +75,7 @@ async function deleteBook(id) {
     await book.destroy();
     return { message: "Book deleted" };
   } catch (error) {
-    throw new Error(error);
+    throw error;
   }
 }
 

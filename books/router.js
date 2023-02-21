@@ -20,8 +20,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const { limit, offset } = req.query;
-    res.status(200).send(await getBooks(limit, offset));
+    res.status(200).send(await getBooks(req.query));
   } catch (error) {
     res.status(400).send({ message: error.message });
   }

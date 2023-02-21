@@ -15,8 +15,8 @@ async function startDBServer() {
 
 async function stopDBServer() {
   try {
-    // await dropAllTables();
-    // await disconnectFromDB();
+    await dropAllTables();
+    await disconnectFromDB();
     // eslint-disable-next-line no-promise-executor-return
     await new Promise((resove) => setTimeout(resove, 1000));
   } catch (err) {

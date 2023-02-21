@@ -1,7 +1,7 @@
 const { Umzug, SequelizeStorage } = require("umzug");
 const { Sequelize } = require("sequelize");
 
-const storage = process.env.SQL_DB_PATH;
+const storage = process.env.SQL_DB_PATH || "test.db";
 const sequelize = new Sequelize({
   dialect: "sqlite",
   storage,

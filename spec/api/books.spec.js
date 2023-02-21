@@ -32,10 +32,23 @@ describe("Books API", () => {
     expect(body.genre).toEqual("Test Category");
   });
 
+  it("Test Book Creation API with Invalid Data", async () => {
+    const { status, body } = await request.post("/books").send({
+      title: "Test Book",
+      authorName: "Test authorName",
+      description: "Test Description",
+      quantity: 10,
+      genre: "Test Category",
+    });
+
+    expect(status).toBe(400);
+    expect(body).toBeDefined();
+  });
+
   it("Test List Book API", async () => {
     const isbn = generateRandomISBN();
     const { status, body } = await request.post("/books").send({
-      title: "Test Book",
+      title: "Test Book 1",
       authorName: "Test authorName",
       isbn,
       description: "Test Description",
@@ -46,12 +59,30 @@ describe("Books API", () => {
     expect(status).toBe(201);
     expect(body).toBeDefined();
 
-    const { status: status1, body: data } = await request.get("/books");
+    const isbn1 = generateRandomISBN();
+    const { status: statusX, body: bodyX } = await request.post("/books").send({
+      title: "Test Book 2",
+      authorName: "Test authorName",
+      isbn: isbn1,
+      description: "Test Description",
+      quantity: 10,
+      genre: "Test Category",
+    });
+
+    expect(statusX).toBe(201);
+    expect(bodyX).toBeDefined();
+
+    const { status: status1, body: data } = await request.get("/books").query({
+      limit: 2,
+      offset: 0,
+      sortBy: JSON.stringify(["createdAt"]),
+      sortOrder: JSON.stringify(["DESC"]),
+    });
 
     expect(status1).toBe(200);
     expect(data).toBeDefined();
     expect(data.length).toBeGreaterThan(0);
-  });
+  }, 5000);
 
   it("Test Get Book By ID API", async () => {
     const isbn = generateRandomISBN();
@@ -93,11 +124,13 @@ describe("Books API", () => {
       .post(`/books/${body.id}`)
       .send({
         description: "Test Description Updated",
-        quantity: 10,
+        quantity: -3,
       });
 
     expect(status1).toBe(200);
     expect(updateBook).toBeDefined();
+    expect(updateBook.description).toBe("Test Description Updated");
+    expect(updateBook.quantity).toBe(7);
   });
 
   it("Test Delete Book API", async () => {
@@ -128,5 +161,6 @@ describe("Books API", () => {
 
     expect(status2).toBe(400);
     expect(getBook).toBeDefined();
+    expect(getBook.message).toBe("Book not found");
   });
 });
